@@ -32,7 +32,7 @@ function start() {
 			message: "Would you like to do?",
 			choices: ["View ALL Employees", "View All Employees by Department", "View All Employees by Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "Exit"],
 		})
-		.then(function (answer,) {
+		.then(function (answer) {
 			switch (answer.action) {
 				case "View ALL Employees":
 					viewAllEmployees();
@@ -73,42 +73,39 @@ function start() {
 
 function viewAllEmployees() {
 	const query =
-    "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
-    
-  
+		"SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
+
 	connection.query(query, function (err, res) {
 		if (err) throw err;
-    
-    //Display the query results to console using console.table
-    console.table(res)
 
-    //Return to the start menu
+		//Display the query results to console using console.table
+		console.table(res);
+
+		//Return to the start menu
 		start();
 	});
 }
 
 function viewAllEmployeesByDept() {
+	const query = "SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id";
 
-};
+	connection.query(query, function (err, res) {
+		if (err) throw err;
 
-function viewAllEmployeesByManager() {
+		//display the query results to console using console.table
+		console.table(res);
 
-};
+		//Return to the start menu
+		start();
+	});
+}
 
-function addEmployee() {
+// function viewAllEmployeesByManager() {}
 
-};
+// function addEmployee() {}
 
-function removeEmployee() {
+// function removeEmployee() {}
 
-};
+// function updateEmployeeRole() {}
 
-function updateEmployeeRole() {
-
-};
-
-function updateEmployeeManager() {
-  
-};
-
-
+// function updateEmployeeManager() {}
