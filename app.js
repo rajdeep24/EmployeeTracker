@@ -71,23 +71,39 @@ function start() {
 
 //View all employees function
 
-function viewAllEmployees() {
-	const query =
-		"SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
-
-	connection.query(query, function (err, res) {
+function viewAllEmployeesByDept() {
+	connection.query("Select * from department", (err, data) => {
 		if (err) throw err;
-
-		//Display the query results to console using console.table
-		console.table(res);
-
-		//Return to the start menu
-		start();
+		console.log(data);
+		const formattedData = data.map((object) => {
+			let newObject = {};
+			newObject.name = object.name;
+			newObject.value = object.id;
+			return newObject;
+		});
+		console.log(formattedData);
+		inquirer
+			.prompt([
+				{
+					name: "department",
+					message: "Which department would you like to search?",
+					type: "list",
+					choices: formattedData,
+				},
+			])
+			.then((response) => {
+				console.log(response);
+				connection.query(`Select a.name, c.first_name, c.last_name from department a, role b, employee c where a.id = b.department_id and b.id = c.role_id and a.id = ?;`, [response.department], (err, data) => {
+					if (err) throw err;
+					console.table(data);
+					start();
+				});
+			});
 	});
 }
 
-function viewAllEmployeesByDept() {
-	const query = "SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id";
+function viewAllEmployees() {
+	const query = `SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC`;
 
 	connection.query(query, function (err, res) {
 		if (err) throw err;
@@ -108,7 +124,7 @@ function viewAllRoles() {
 	});
 }
 
-// function addEmployee() {}
+function addEmployee() {}
 
 // function removeEmployee() {}
 
