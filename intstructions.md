@@ -89,7 +89,7 @@ How do you deliver this? Here are some guidelines:
   * Add departments, roles, employees
 
   * View departments, roles, employees
-cd .
+
   * Update employee roles
 
 ## Bonus

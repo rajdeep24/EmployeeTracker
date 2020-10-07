@@ -30,7 +30,7 @@ function start() {
 			name: "action",
 			type: "list",
 			message: "Would you like to do?",
-			choices: ["View ALL Employees", "View All Employees by Department", "View All Employees by Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "Exit"],
+			choices: ["View ALL Employees", "View All Employees by Department", "View All Roles", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "Exit"],
 		})
 		.then(function (answer) {
 			switch (answer.action) {
@@ -42,8 +42,8 @@ function start() {
 					viewAllEmployeesByDept();
 					break;
 
-				case "View All Employees by Manager":
-					viewAllEmployeesByManager();
+				case "View All Roles":
+					viewAllRoles();
 					break;
 
 				case "Add Employee":
@@ -100,7 +100,13 @@ function viewAllEmployeesByDept() {
 	});
 }
 
-// function viewAllEmployeesByManager() {}
+function viewAllRoles() {
+	connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;", function (err, res) {
+		if (err) throw err;
+		console.table(res);
+		start();
+	});
+}
 
 // function addEmployee() {}
 
