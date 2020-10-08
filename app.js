@@ -2,6 +2,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 const consoleTable = require("console.table");
+const figlet = require("figlet");
 
 //create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -15,12 +16,31 @@ const connection = mysql.createConnection({
 	database: "employees_db",
 });
 
-// connect to the mysql server and sql database
+//Run the figlet program to display the start-up screen
 connection.connect(function (err) {
 	if (err) throw err;
-	// run the start function after the connection is made to prompt the user
-	console.log("Connected to port:");
-	start();
+	console.log("connected as id " + connection.threadId);
+	// opening design
+	figlet.text(
+		"Raj Kakar",
+		{
+			font: "doh",
+			horizontalLayout: "default",
+			verticalLayout: "default",
+			width: 100,
+			whitespaceBreak: true,
+		},
+		function (err, data) {
+			if (err) {
+				console.log("Something went wrong...");
+				console.dir(err);
+				return;
+			}
+			console.log(data);
+			//begin questions
+			start();
+		}
+	);
 });
 
 //function which prompts the user for what action they should take
@@ -124,7 +144,121 @@ function viewAllRoles() {
 	});
 }
 
-function addEmployee() {}
+let rolesArray = ["Sales Associate", "Sales Lead", "Account Manager", "Marketing Manager", "HR Recruiter", "HR Manager", "Lead Accountant", "Accountant", "Financial Manager"];
+//get employee names
+
+// function addEmployee() {
+// 	inquirer
+// 		.prompt([
+// 			{
+// 				type: "input",
+// 				message: "What is the employee's first name?",
+// 				name: "first_name",
+// 			},
+// 			{
+// 				type: "input",
+// 				message: "What is the employee's last name?",
+// 				name: "last_name",
+// 			},
+// 			{
+// 				type: "list",
+// 				message: "What is the employee's role?",
+// 				name: "role",
+// 				choices: rolesArray,
+// 			},
+// 		])
+// 		.then(function (choice) {
+// 			if (choice.role === "Sales Associate") {
+// 				role_id = 1;
+// 				manager_id = 3;
+// 			} else if (choice.role === "Sales Lead") {
+// 				role_id = 2;
+// 				manager_id = 3;
+// 			} else if (choice.role === "Account Manager") {
+// 				role_id = 3;
+// 				manager_id = null;
+// 			} else if (choice.role === "Marketing Manager") {
+// 				role_id = 4;
+// 				manager_id = null;
+// 			} else if (choice.role === "HR Recruiter") {
+// 				role_id = 5;
+// 				manager_id = 6;
+// 			} else if (choice.role === "HR Manager") {
+// 				role_id = 6;
+// 				manager_id = null;
+// 			} else if (choice.role === "Lead Accountant") {
+// 				role_id = 7;
+// 				manager_id = 9;
+// 			} else if (choice.role === "Accountant") {
+// 				role_id = 8;
+// 				manager_id = 9;
+// 			} else if (choice.role === "Financial Manager") {
+// 				role_id = 9;
+// 				manager_id = null;
+// 			}
+// 			addEmployeeChoice(choice.first, choice.last, role_id, manager_id);
+// 			console.log("The Employee has been added");
+// 		});
+// }
+
+// function addEmployeeChoice(first_name, last_name, role_id, manager_id) {
+// 	connection.query(
+// 		`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+// 		VALUES(${first_name}, ${last_name}, ${role_id},${manager_id})`,
+// 		function (err, res) {
+// 			if (err) throw err;
+// 		}
+// 	);
+// }
+
+function addEmployee() {
+	connection.query("SELECT * FROM role", function (err, result) {
+		if (err) throw err;
+
+		inquirer
+			.prompt([
+				{
+					name: "firstName",
+					type: "input",
+					message: "Enter the employee's First Name:",
+				},
+				{
+					name: "lastName",
+					type: "input",
+					message: "Enter the employee's Last Name:",
+				},
+				{
+					name: "roleChoice",
+					type: "rawlist",
+					message: "Enter the employee's role",
+					choices: function () {
+						const choicesArray = [];
+
+						for (let i = 0; i < result.length; i++) {
+							choicesArray.push(result[i].title);
+						}
+
+						return choicesArray;
+					},
+				},
+			])
+			.then(function (answer) {
+				connection.query("SELECT * FROM role WHERE ?", { title: answer.roleChoice }, function (err, result) {
+					if (err) throw err;
+
+					connection.query("INSERT INTO employee SET ?", {
+						first_name: answer.firstName,
+						last_name: answer.lastName,
+						role_id: result[0].id,
+					});
+
+					console.log("\n Employee added to database... \n");
+				});
+				viewAllEmployees();
+				start();
+			});
+	});
+}
 
 // function removeEmployee() {}
 
