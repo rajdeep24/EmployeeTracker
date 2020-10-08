@@ -27,7 +27,7 @@ connection.connect(function (err) {
 			font: "doh",
 			horizontalLayout: "default",
 			verticalLayout: "default",
-			width: 45,
+			width: 100,
 			whitespaceBreak: true,
 		},
 		function (err, data) {
@@ -50,7 +50,7 @@ function start() {
 			name: "action",
 			type: "list",
 			message: "Would you like to do?",
-			choices: ["View ALL Employees", "View All Employees by Department", "View All Roles", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "Exit"],
+			choices: ["View ALL Employees", "View All Employees by Department", "View All Roles", "Add Employee", "Remove Employee", "Update Employee Manager", "Exit"],
 		})
 		.then(function (answer) {
 			switch (answer.action) {
