@@ -144,73 +144,6 @@ function viewAllRoles() {
 	});
 }
 
-let rolesArray = ["Sales Associate", "Sales Lead", "Account Manager", "Marketing Manager", "HR Recruiter", "HR Manager", "Lead Accountant", "Accountant", "Financial Manager"];
-//get employee names
-
-// function addEmployee() {
-// 	inquirer
-// 		.prompt([
-// 			{
-// 				type: "input",
-// 				message: "What is the employee's first name?",
-// 				name: "first_name",
-// 			},
-// 			{
-// 				type: "input",
-// 				message: "What is the employee's last name?",
-// 				name: "last_name",
-// 			},
-// 			{
-// 				type: "list",
-// 				message: "What is the employee's role?",
-// 				name: "role",
-// 				choices: rolesArray,
-// 			},
-// 		])
-// 		.then(function (choice) {
-// 			if (choice.role === "Sales Associate") {
-// 				role_id = 1;
-// 				manager_id = 3;
-// 			} else if (choice.role === "Sales Lead") {
-// 				role_id = 2;
-// 				manager_id = 3;
-// 			} else if (choice.role === "Account Manager") {
-// 				role_id = 3;
-// 				manager_id = null;
-// 			} else if (choice.role === "Marketing Manager") {
-// 				role_id = 4;
-// 				manager_id = null;
-// 			} else if (choice.role === "HR Recruiter") {
-// 				role_id = 5;
-// 				manager_id = 6;
-// 			} else if (choice.role === "HR Manager") {
-// 				role_id = 6;
-// 				manager_id = null;
-// 			} else if (choice.role === "Lead Accountant") {
-// 				role_id = 7;
-// 				manager_id = 9;
-// 			} else if (choice.role === "Accountant") {
-// 				role_id = 8;
-// 				manager_id = 9;
-// 			} else if (choice.role === "Financial Manager") {
-// 				role_id = 9;
-// 				manager_id = null;
-// 			}
-// 			addEmployeeChoice(choice.first, choice.last, role_id, manager_id);
-// 			console.log("The Employee has been added");
-// 		});
-// }
-
-// function addEmployeeChoice(first_name, last_name, role_id, manager_id) {
-// 	connection.query(
-// 		`INSERT INTO employee (first_name, last_name, role_id, manager_id)
-// 		VALUES(${first_name}, ${last_name}, ${role_id},${manager_id})`,
-// 		function (err, res) {
-// 			if (err) throw err;
-// 		}
-// 	);
-// }
-
 function addEmployee() {
 	connection.query("SELECT * FROM role", function (err, result) {
 		if (err) throw err;
@@ -260,8 +193,48 @@ function addEmployee() {
 	});
 }
 
-// function removeEmployee() {}
+// removes employee from database
+function removeEmployee() {
+	inquirer
+		.prompt([
+			{
+				name: "first_name",
+				type: "input",
+				message: "What is your Employee's First Name?",
+			},
+			{
+				name: "last_name",
+				type: "input",
+				message: "What is your Employee's Last Name?",
+			},
+		])
+		.then(function (answer) {
+			connection.query("DELETE FROM employee WHERE first_name = ? and last_name = ?", [answer.first_name, answer.last_name], function (err) {
+				if (err) throw err;
+
+				console.log(`\n ${answer.first_name} ${answer.last_name} has been deleted from the database... \n`);
+				promptQuit();
+			});
+		});
+}
 
 // function updateEmployeeRole() {}
 
 // function updateEmployeeManager() {}
+
+function promptQuit() {
+	inquirer
+		.prompt({
+			type: "list",
+			name: "promptQuit",
+			message: "Would you like to quit this application or run again?",
+			choices: ["Run Again", "Quit"],
+		})
+		.then(function (answer) {
+			if (answer.promptQuit === "Run Again") {
+				start();
+			} else {
+				connection.end();
+			}
+		});
+}
