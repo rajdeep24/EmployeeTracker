@@ -32,33 +32,31 @@ EmployeeTracker can be accessed at github link provided below:
 
 Github Repository: <https://github.com/rajdeep24/EmployeeTracker>
 
-Video Link: <>
+Video Link: <https://drive.google.com/file/d/1bXkcMtujp0WI6tyYj4mK6cmvUtnfRB5O/view>
 
 ### Screenshots
 
 #### Homepage
 
-![EmployeeTracker Main Menu](./public/assets/images/hompage_screenshot.PNG)
+![EmployeeTracker Main Menu](./public/assets/images/main_menu.PNG)
 
 #### View all Employees
 
-![View All Employees Page]()
+![View All Employees Page](./public/assets/images/view_all_employees.PNG)
 
 #### View Employees by dept
 
-![View All Employee by dept]()
+![View All Employee by dept](./public/assets/images/view_employees_by_department.PNG)
 
 #### Add Employee
 
-![Add Employee by dept]()
+![Add Employee by dept](./public/assets/images/add_employee_part1.PNG)
+
+![Add Employee by dept](./public/assets/images/add_employee_part2.PNG)
 
 #### Remove Employee
 
-![Remove Employee by dept]()
-
-#### Update Employee
-
-![Update Employee by dept]()
+![Remove Employee by dept](./public/assets/images/Remove_Employee.PNG)
 
 ## Credits
 
