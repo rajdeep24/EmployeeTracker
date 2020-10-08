@@ -218,9 +218,110 @@ function removeEmployee() {
 		});
 }
 
-// function updateEmployeeRole() {}
+// removes employee from database
+function removeEmployee() {
+	inquirer
+		.prompt([
+			{
+				name: "first_name",
+				type: "input",
+				message: "What is your Employee's First Name?",
+			},
+			{
+				name: "last_name",
+				type: "input",
+				message: "What is your Employee's Last Name?",
+			},
+		])
+		.then(function (answer) {
+			connection.query("DELETE FROM employee WHERE first_name = ? and last_name = ?", [answer.first_name, answer.last_name], function (err) {
+				if (err) throw err;
 
-// function updateEmployeeManager() {}
+				console.log(`\n ${answer.first_name} ${answer.last_name} has been deleted from the database... \n`);
+				promptQuit();
+			});
+		});
+}
+
+// Displays a Table based on the User's Choice
+createTable = (sql) => {
+	connection.query(sql, (err, res) => {
+		if (err) throw err;
+		console.table(res);
+		start();
+		start();
+	});
+};
+// Creates an array of Current Employees
+createEmployeesArray = (array) => {
+	return array.map((array) => {
+		return `${array.first_name} ${array.last_name}`;
+	});
+};
+
+// Creates an array of Current Roles
+createRolesArray = (array) => {
+	return [
+		...new Set(
+			array.map((array) => {
+				return array.title;
+			})
+		),
+	];
+};
+// Updates an Employee's Manager in the Database
+updateEmployeeManager = () => {
+	// Retrieves a Table of Employees from the Database
+	connection.query(`SELECT employee.id, employee.first_name, employee.last_name FROM employee`, (err, result) => {
+		if (err) throw err;
+		// Creates an array of Current Employees
+		const currentEmployeesArray = createEmployeesArray(result);
+
+		inquirer
+			.prompt([
+				{
+					name: "employee",
+					type: "list",
+					message: "Which employee would you like to update?",
+					choices: currentEmployeesArray,
+				},
+				{
+					name: "manager",
+					type: "list",
+					message: "Which employee will become the selected employee's manager?",
+					choices: currentEmployeesArray,
+				},
+			])
+			.then((response) => {
+				// Splits the Employee Array into First Name and Last Name
+				const employeeArray = response.employee.split(" ");
+				const employeeFirstName = employeeArray[0];
+				const employeeLastName = employeeArray[1];
+
+				// Splits the Manager Array into First Name and Last Name
+				const managerArray = response.manager.split(" ");
+				const managerFirstName = managerArray[0];
+				const managerLastName = managerArray[1];
+
+				// Retrieves the correct roleId and ManagerId from the database
+				let managerId;
+				for (let i = 0; i < result.length; i++) {
+					if (managerFirstName === result[i].first_name && managerLastName === result[i].last_name) {
+						managerId = result[i].id;
+					}
+				}
+
+				// Updates an Employee's Manager in the Database
+				connection.query(`UPDATE employee SET manager_id = ? WHERE employee.first_name = ? AND employee.last_name = ?`, [managerId, employeeFirstName, employeeLastName], (err, res) => {
+					if (err) throw err;
+					start();
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	});
+};
 
 function promptQuit() {
 	inquirer
