@@ -27,7 +27,7 @@ connection.connect(function (err) {
 			font: "doh",
 			horizontalLayout: "default",
 			verticalLayout: "default",
-			width: 100,
+			width: 45,
 			whitespaceBreak: true,
 		},
 		function (err, data) {
