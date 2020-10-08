@@ -74,10 +74,6 @@ function start() {
 					removeEmployee();
 					break;
 
-				case "Update Employee Role":
-					updateEmployeeRole();
-					break;
-
 				case "Update Employee Manager":
 					updateEmployeeManager();
 					break;
@@ -218,37 +214,11 @@ function removeEmployee() {
 		});
 }
 
-// removes employee from database
-function removeEmployee() {
-	inquirer
-		.prompt([
-			{
-				name: "first_name",
-				type: "input",
-				message: "What is your Employee's First Name?",
-			},
-			{
-				name: "last_name",
-				type: "input",
-				message: "What is your Employee's Last Name?",
-			},
-		])
-		.then(function (answer) {
-			connection.query("DELETE FROM employee WHERE first_name = ? and last_name = ?", [answer.first_name, answer.last_name], function (err) {
-				if (err) throw err;
-
-				console.log(`\n ${answer.first_name} ${answer.last_name} has been deleted from the database... \n`);
-				promptQuit();
-			});
-		});
-}
-
 // Displays a Table based on the User's Choice
 createTable = (sql) => {
 	connection.query(sql, (err, res) => {
 		if (err) throw err;
 		console.table(res);
-		start();
 		start();
 	});
 };

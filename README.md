@@ -16,7 +16,6 @@ The EmployeeTracker is a CLI application that allows a companies user to keep tr
 - View all roles
 - Add employees
 - Remove employees
-- Update employee role
 - Update employee manager
 
 ## Tools Used
